@@ -1,0 +1,29 @@
+# Variante con GMC para videos con camara en movimiento (paneo/zoom/travelling).
+# Cuesta ~6x CPU por frame: usar SOLO si el video mueve la camara y hay swaps.
+# Docs: https://docs.ultralytics.com/modes/track
+# Diferencias vs botsort.yaml stock:
+#  - with_reid: True + yolo26n-reid.onnx (el "auto" NO carga red ReID, solo
+#    pasa features del detector, que en modelos pose no existen -> ReID muerta).
+#  - track_buffer 90: un dancer tapado 3s (@30fps) conserva su ID al reaparecer.
+#  - new_track_thresh 0.4: menos IDs fantasma tras oclusiones.
+#  - appearance_thresh 0.7: re-identifica aunque el vestuario sea parecido.
+#  - gmc_method none: camara fija de escenario (sparseOptFlow solo si hay paneo).
+
+tracker_type: botsort # (str) Tracker backend: botsort
+track_high_thresh: 0.2 # (float) Primera etapa; bajo para no perder dancers en overlap parcial
+track_low_thresh: 0.1 # (float) Segunda etapa (idea ByteTrack): recupera cajas de baja conf en oclusion
+new_track_thresh: 0.4 # (float) Nuevo track solo con evidencia solida; reduce IDs fantasma
+track_buffer: 90 # (int) Frames que un track perdido sigue vivo; alto = aguanta oclusiones largas
+match_thresh: 0.8 # (float) Umbral de asociacion IoU/coste
+fuse_score: True # (bool) Fusiona score de deteccion con movimiento/IoU
+
+# BoT-SORT specifics (ver repo original: https://github.com/niraharon/BoT-SORT)
+gmc_method: sparseOptFlow # (str) Compensacion de movimiento de camara para
+  # videoclips con paneo/zoom: sin GMC el Kalman predice mal y hay ID-switch.
+
+# ReID model related thresh
+proximity_thresh: 0.5 # (float) Min IoU para considerar tracks proximos para ReID
+appearance_thresh: 0.85 # (float) Similitud minima de apariencia para ReID; estricto
+  # para no confundir dancers con vestuario parecido (mejor nuevo ID que swap)
+with_reid: True # (bool) ReID de apariencia: distingue dancers tapados/cruzados
+model: yolo26n-reid.onnx # (str) ReID liviana CPU (se descarga sola por ultralytics)

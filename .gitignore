@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.coverage
+
+
+
+# Entorno / editor
+.vscode/
+.idea/
+*.log
+
+# Modelos descargados
+.cache/
+
+
+/songs
+
+*.mp4
+*.pt
+
+README-assets/aespanovaerrors.mp4
+
+README-assets/aespavideo.mp4
+
+README-assets/newjeansshort.mp4

@@ -1,0 +1,68 @@
+[project]
+name = "openjustdance"
+version = "0.1.0"
+description = "Open Just Dance - Open-source dance game with AI pose estimation"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24.0",
+    "mediapipe==0.10.14",
+    "opencv-python>=4.10",
+    "PySide6>=6.7",
+    "scipy>=1.11",
+    "ultralytics>=8.3",
+    "torch>=2.0",
+    "boxmot>=25.0.0",
+    "insightface>=2.0",
+    "onnxruntime-gpu==1.22.0",
+    "torchvision>=0.18",
+]
+
+[project.optional-dependencies]
+server = ["aiohttp>=3.9"]
+gpu = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+]
+
+# FaceID manual (Mandatory only for multi-intake):
+#   uv pip install "insightface>=2.0" "onnxruntime-gpu==1.22.0"
+#   uv run --no-sync python -c "import insightface"  # verificar
+
+[project.scripts]
+openjustdance = "apps.desktop.main:main"
+pose-extractor = "tools.pose_extractor.cli:main"
+engine-server = "services.engine_server.server:main"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["engine*", "shared*", "tools*", "apps*", "services*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+
+
+dev = [
+    "pytest>=8.0.0",
+    "black>=24.0.0",
+    "ruff>=0.3.0",
+]
+
+[tool.uv]
+python-downloads = "automatic"
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128" }]
+torchvision = [{ index = "pytorch-cu128" }]

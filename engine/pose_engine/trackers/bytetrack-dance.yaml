@@ -1,0 +1,11 @@
+# ByteTrack tuneado para baile multi-dancer (sin ReID: rapido, solo movimiento).
+# Alternativa cuando no hay red para descargar el modelo ReID o se quiere
+# maxima velocidad. Docs: https://docs.ultralytics.com/modes/track
+
+tracker_type: bytetrack # (str) Tracker backend: bytetrack
+track_high_thresh: 0.2 # (float) Primera etapa; bajo para no perder dancers en overlap parcial
+track_low_thresh: 0.1 # (float) Segunda etapa: recupera cajas de baja conf en oclusion
+new_track_thresh: 0.4 # (float) Nuevo track solo con evidencia solida; reduce IDs fantasma
+track_buffer: 90 # (int) Frames que un track perdido sigue vivo; alto = aguanta oclusiones largas
+match_thresh: 0.8 # (float) Umbral de asociacion IoU/coste
+fuse_score: True # (bool) Fusiona score de deteccion con movimiento/IoU
